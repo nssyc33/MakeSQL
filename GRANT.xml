@@ -14,3 +14,37 @@
 --(JOHN)
 --DROP SYNONYM IZONE;
 --SELECT * FROM IZONE
+
+----------------------------------------------------------------
+1. 사용자에게 부여된 시스템 권한 확인
+SELECT * FROM DBA_SYS_PRIVS
+WHERE GRANTEE = '사용자명' ;
+
+-- 2. 사용자에게 부여된 롤 확인(시스템 권한이 롤에 포함됨)
+SELECT * FROM DBA_ROLE_PRIVS
+WHERE GRANTEE = '사용자명' ;
+
+-- 3. 사용자에게 부여된 롤에 부여된 시스템 권한 확인
+SELECT * FROM DBA_SYS_PRIVS
+WHERE GRANTEE = '롤명' ;
+
+-- 4. 타 사용자에게 부여한 객체(테이블등) 권한 확인
+SELECT * FROM DBA_TAB_PRIVS
+WHERE OWNER = '테이블소유자명' ;
+또는,
+SELECT * FROM DBA_TAB_PRIVS
+WHERE GRANTEE = '권한부여자명' ;
+
+
+DDL 권한 : 기본적으로 CREATE TABLE 권한(1, 2번 SQL로 확인 가능)이 있으면, 자기가 생성한 테이블에 대해서는
+ALTER, DROP, TRUNCATE 가능
+타 사용자에 대한 테이블 생성 권한은 DBA_SYS_PRIVS에서 확인 가능(CREATE ANY TABLE)
+DML 권한 : 본인 소유의 테이블은 모든 작업 수행 가능
+타인 소유의 테이블에 대한 작업 수행은 4번 SQL로 확인 가능
+DCL 권한 : 본인 소유의 테이블에 대한 타 사용자에게의 GRANT는 항상 가능
+타인 소유의 테이블에 대한 타 사용자에게의 GRANT 권한은,
+해당 테이블에 대한 권한을 DBA_TAB_PRIVS.GRANTABLE 컬럼에 YES 로 받은 경우 가능
+GRANT ANY OBJECT PRIVILEGE 시스템 권한(1, 2번 SQL로 확인 가능)을 가지고 있는 경우
+타 사용자의 모든 객체에 대한 권한 부여 가능(DBA도 해당 권한이 있음)
+
+출처: https://jhroom.tistory.com/168 [JH's Room]
